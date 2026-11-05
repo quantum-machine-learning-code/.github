@@ -41,7 +41,8 @@
 ## 路线图
 
 - 多 `--seed` 重复实验与统计检验、等参数预算对照
-- amplitude encoding / 数据重上传、量子核 QSVC 作为第三条基线
+- 已在 quantum-mnist 实现：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描
+- 数据重上传、增加读出可观测量、量子核 QSVC 作为第三条基线
 - 噪声模型与有限 shots
 - Lightning GPU 后端与更多 qubits
 - 条件成熟时再接入真实量子硬件
