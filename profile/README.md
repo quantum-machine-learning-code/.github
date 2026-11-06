@@ -23,7 +23,7 @@
 
 | 仓库 | 说明 | 状态 |
 | --- | --- | --- |
-| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | PCA 降维 + AngleEmbedding + StronglyEntanglingLayers 的 VQC，附真实 MNIST 实测指标与对比图 | 活跃 |
+| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | VQC / 振幅编码 / 容量扫描与多 seed 统计对照，附真实 MNIST 实测指标、对比图与方法学审查 `docs/REVIEW.md` | 活跃 |
 | [quantum-llm](https://github.com/quantum-machine-learning-code/quantum-llm) | 玩具级量子增强字符 LM，附 loss / 困惑度 / 耗时对照与贪心生成样本 | 活跃 |
 | `.github` | 组织 profile 与共享文档（本仓库） | — |
 
@@ -31,7 +31,7 @@
 
 1. **不宣称量子优势。** 量子模型在这个规模下常常打平甚至落后于经典基线，量子与经典两组数字会一起公开 —— 两个仓库的实测结果都是如此。
 2. **说清边界。** 状态向量模拟是 2ⁿ 内存墙，4–12 qubits 是笔记本舒适区；当前条件下不存在可行的量子 LLM。`quantum-llm` 只是沿用方向命名的**玩具级可微分层验证**，README 开头就写明了这一点，它不是能对话的大模型。
-3. **可复现。** 固定种子、离线数据与内置语料、精确复现命令；单次运行的结果会明确标注「未做统计重复」。
+3. **可复现，且承认错误。** 固定种子、离线数据、精确复现命令；结论性数字带多 seed 均值与标准差。`quantum-mnist` 在 2026-11-06 做过一次方法学审查：发现种子 bug、撤回了一个基于单次运行的「+15.5 pt」结论，并把问题清单、实测证据与参考实现对照公开写在 `docs/REVIEW.md` 里。
 4. **不需要真机。** 全部实验在经典模拟器上完成，无需 IBM Quantum 等平台账号或 token。
 
 ## 技术栈
@@ -40,13 +40,13 @@
 
 ## 路线图
 
-- 多 `--seed` 重复实验与统计检验、等参数预算对照
-- 已在 quantum-mnist 实现：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描
-- 数据重上传、增加读出可观测量、量子核 QSVC 作为第三条基线
+- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`experiments/train_multiseed.py`）、改良分类头与输出缩放
+- 等参数预算对照与量子核 QSVC 第三条基线
+- 数据重上传、增加读出可观测量
 - 噪声模型与有限 shots
 - Lightning GPU 后端与更多 qubits
 - 条件成熟时再接入真实量子硬件
 
 ## 贡献
 
-欢迎 issue 与 PR。新增实验请保留经典基线、固定随机种子，并在 README 里写清配置、边界与全部结果 —— 不要只报好看的那一组数字。两个实验仓库均为 MIT 许可。
+欢迎 issue 与 PR。新增实验请保留经典基线、在**构造模型之前**固定随机种子，并在 README 里写清配置、边界与全部结果 —— 不要只报好看的那一组数字。结论性差异需要多 seed 均值与方差支撑。两个实验仓库均为 MIT 许可。
