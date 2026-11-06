@@ -40,9 +40,10 @@
 
 ## 路线图
 
-- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`experiments/train_multiseed.py`）、改良分类头与输出缩放
+- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`experiments/train_multiseed.py`）、改良分类头与输出缩放、**9 组 × 5 seed 的瓶颈分解与量子读出信息探针**（`experiments/diagnose_ceiling.py`，轻量/强特征两种混合 CNN 前端）
+- **已量出的瓶颈**：最佳 VQC 的 0.664 基本等于其 10 维 `PauliZ` 读出的可分性上限 0.679（原始像素探针 0.855）；训练/数据预算翻倍只值 +1.3 / +4.0 pt，换经典 CNN 特征前端可到 0.863–0.934。详见 `docs/REVIEW.md` 第 8 节
 - 等参数预算对照与量子核 QSVC 第三条基线
-- 数据重上传、增加读出可观测量
+- 数据重上传、增加读出可观测量、给量子层单独调参（轻量前端有 1/5 seed 训练崩溃）
 - 噪声模型与有限 shots
 - Lightning GPU 后端与更多 qubits
 - 条件成熟时再接入真实量子硬件
