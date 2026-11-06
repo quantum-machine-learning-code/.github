@@ -23,7 +23,7 @@
 
 | 仓库 | 说明 | 状态 |
 | --- | --- | --- |
-| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | VQC / 振幅编码 / 容量扫描与多 seed 统计对照，附真实 MNIST 实测指标、对比图与方法学审查 `docs/REVIEW.md` | 活跃 |
+| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | VQC / 振幅编码 / 多可观测量读出 / 容量扫描与三轮 5 seed 统计对照，附真实 MNIST 实测指标、对比图与方法学审查 `docs/REVIEW.md` | 活跃 |
 | [quantum-llm](https://github.com/quantum-machine-learning-code/quantum-llm) | 玩具级量子增强字符 LM，附 loss / 困惑度 / 耗时对照与贪心生成样本 | 活跃 |
 | `.github` | 组织 profile 与共享文档（本仓库） | — |
 
@@ -40,12 +40,12 @@
 
 ## 路线图
 
-- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`experiments/train_multiseed.py`）、改良分类头与输出缩放、**9 组 × 5 seed 的瓶颈分解与量子读出信息探针**（`experiments/diagnose_ceiling.py`，轻量/强特征两种混合 CNN 前端）
-- **已量出的瓶颈**：最佳 VQC 的 0.664 基本等于其 10 维 `PauliZ` 读出的可分性上限 0.679（原始像素探针 0.855）；训练/数据预算翻倍只值 +1.3 / +4.0 pt，换经典 CNN 特征前端可到 0.863–0.934。详见 `docs/REVIEW.md` 第 8 节
-- 等参数预算对照与量子核 QSVC 第三条基线
-- 数据重上传、增加读出可观测量、给量子层单独调参（轻量前端有 1/5 seed 训练崩溃）
-- 噪声模型与有限 shots
-- Lightning GPU 后端与更多 qubits
+- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`train_multiseed.py`）、改良分类头与输出缩放、**9 组 × 5 seed 瓶颈分解与量子读出信息探针**（`diagnose_ceiling.py`）、**11 组 × 5 seed 多可观测量 / 数据重上传 / 单独 lr 对照**（`break_readout.py`）
+- **瓶颈已定位并部分解开**：0.664 约等于 10 维 `PauliZ` 读出的可分性上限 0.679（像素探针 0.855）；把读出扩到 40 维（Z/X/Y + 相邻 ZZ）后，5 seed 准确率 **0.6640 → 0.7720**（配对 +10.80 ± 1.35 pt，CI 不跨 0），冻结探针 **0.679 → 0.811**，回收约 13.2 pt 的可分信息。训练/数据预算翻倍只值 +1.3 / +4.0 pt，换经典 CNN 前端可到 0.863–0.934。详见 `docs/REVIEW.md` 第 8、9 节
+- **已试过但无效 / 未解决**：给量子层单独 lr 没有消除混合前端的训练崩溃；朴素 data re-uploading 在 Z-only 读出下反而掉 11 pt（实现与文献原始设计不同，不外推）
+- 量子层在混合架构里的初始化 / 深度 / lr 系统调参；按文献原始设计重做 data re-uploading
+- 严格等总参数预算对照与量子核 QSVC 第三条基线；≥20 seed + 多重比较校正
+- 噪声模型与有限 shots（多可观测量在真机上需分组测量）、Lightning GPU 后端与更多 qubits
 - 条件成熟时再接入真实量子硬件
 
 ## 贡献
