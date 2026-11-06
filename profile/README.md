@@ -23,7 +23,7 @@
 
 | 仓库 | 说明 | 状态 |
 | --- | --- | --- |
-| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | VQC / 振幅编码 / 多可观测量读出 / 容量扫描与三轮 5 seed 统计对照，附真实 MNIST 实测指标、对比图与方法学审查 `docs/REVIEW.md` | 活跃 |
+| [quantum-mnist](https://github.com/quantum-machine-learning-code/quantum-mnist) | VQC / 振幅编码 / 最多 165 维多可观测量读出 / 容量扫描与五轮 5 seed 统计对照，附真实 MNIST 实测指标、对比图与方法学审查 `docs/REVIEW.md` | 活跃 |
 | [quantum-llm](https://github.com/quantum-machine-learning-code/quantum-llm) | 玩具级量子增强字符 LM，附 loss / 困惑度 / 耗时对照与贪心生成样本 | 活跃 |
 | `.github` | 组织 profile 与共享文档（本仓库） | — |
 
@@ -40,13 +40,12 @@
 
 ## 路线图
 
-- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`train_multiseed.py`）、改良分类头与输出缩放、**9 组 × 5 seed 瓶颈分解与量子读出信息探针**（`diagnose_ceiling.py`）、**11 组 × 5 seed 多可观测量 / 数据重上传 / 单独 lr 对照**（`break_readout.py`）
-- **瓶颈已定位并部分解开**：0.664 约等于 10 维 `PauliZ` 读出的可分性上限 0.679（像素探针 0.855）；把读出扩到 40 维（Z/X/Y + 相邻 ZZ）后，5 seed 准确率 **0.6640 → 0.7720**（配对 +10.80 ± 1.35 pt，CI 不跨 0），冻结探针 **0.679 → 0.811**，回收约 13.2 pt 的可分信息。训练/数据预算翻倍只值 +1.3 / +4.0 pt，换经典 CNN 前端可到 0.863–0.934。详见 `docs/REVIEW.md` 第 8、9 节
-- **已试过但无效 / 未解决**：给量子层单独 lr 没有消除混合前端的训练崩溃；朴素 data re-uploading 在 Z-only 读出下反而掉 11 pt（实现与文献原始设计不同，不外推）
-- 量子层在混合架构里的初始化 / 深度 / lr 系统调参；按文献原始设计重做 data re-uploading
-- 严格等总参数预算对照与量子核 QSVC 第三条基线；≥20 seed + 多重比较校正
-- 噪声模型与有限 shots（多可观测量在真机上需分组测量）、Lightning GPU 后端与更多 qubits
-- 条件成熟时再接入真实量子硬件
+- **已完成（quantum-mnist）**：amplitude encoding 无压缩对照、输入维度与电路深度容量扫描、方法学审查、5 seed 重复实验 + 配对差值置信区间（`train_multiseed.py`）、改良分类头与输出缩放、9 组 × 5 seed 瓶颈分解与量子读出信息探针（`diagnose_ceiling.py`）、11 组 × 5 seed 多可观测量 / 数据重上传 / 单独 lr 对照（`break_readout.py`）、**全两体关联读出（最多 165 维）**、**信息上界分解诊断**（`probe_information.py`）、**9 组 × 5 seed 加宽读出 + 数据规模对照**（`push_ceiling.py`）、**等数据 / 近似等参数预算经典对照**（`classical_budget.py`）
+- **瓶颈已定位并大部分解开**：10 维 `PauliZ` 读出的可分性上限只有 0.679（像素探针 0.855）；扩到 40 维后 5 seed 准确率 `0.6640 → 0.7720`，再扩到 165 维（全部 ZZ/XX/YY 两体关联）到 **`0.8450 ± 0.0100`**（同批次配对 `+7.60 ± 2.38 pt`，CI 不跨 0），加 1800 张真图到 **`0.8660 ± 0.0185`**（不显著）。诊断确认**不是 barren plateau**：量子权重只动 6.9%、梯度范数 0.048 → 0.897，165 维**不训练**的读出上界已有 0.860；瓶颈是「只读 40 个观测量」+「只有 600 张图」。详见 `docs/REVIEW.md` 第 10、11 节
+- **仍不宣称量子优势**：同批次 600 张图上，165 维量子模型与 MLP-784 / PCA-165 / 轻量 CNN 的配对 CI 全跨 0（统计打平）；但**等数据 + 近似等参数预算**的纯经典 `PCA-165 + MLP` 是 `0.9030 ± 0.0097`（5642 参数 ≈ 量子 5702），仍领先 3.7 pt 且快两个数量级
+- **已试过但无效 / 未解决**：给量子层单独 lr 没有消除混合前端的训练崩溃；朴素 data re-uploading 在 Z-only 读出下掉 11 pt（实现与文献原始设计不同，不外推）；分类头 hidden 32→128 只 +0.20 pt；±1px 平移增强 −4.40 pt（振幅编码无平移不变性）
+- 下一步：补归纳偏置（量子卷积 / 按文献原始设计重做 data re-uploading）、量子核 QSVC 第三条基线、混合架构量子层调参、≥20 seed + 多重比较校正
+- 噪声模型与有限 shots（多可观测量按 QWC 分组实测只需 3 个测量设置）、Lightning GPU 后端与更多 qubits；条件成熟时再接入真实量子硬件
 
 ## 贡献
 
