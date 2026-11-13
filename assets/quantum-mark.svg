@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<path d="M 78.3 36.6 A 34 34 0 1 1 63.4 21.7" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="butt"/>
+<path d="M 14 52 A 34 11 0 0 0 82 52 M 48 18 A 11 34 0 0 0 48 86" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="butt"/>
+<circle cx="48" cy="52" r="4" fill="currentColor"/>
+<path d="M 48 52 L 73.3 26.7" fill="none" stroke="currentColor" stroke-width="5.5" stroke-linecap="butt"/>
+<rect x="76" y="12" width="12" height="12" fill="currentColor"/>
+</svg>

@@ -1,5 +1,12 @@
 # Quantum Machine Learning Code
 
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/quantum-machine-learning-code/.github/main/assets/quantum-avatar-dark.png">
+    <img src="https://raw.githubusercontent.com/quantum-machine-learning-code/.github/main/assets/quantum-avatar.png" alt="Quantum Machine Learning Code mark" width="120">
+  </picture>
+</p>
+
 > 公开的量子机器学习实验仓库组织。
 > **Reproducible quantum–classical ML baselines — measured, not marketed.**
 
