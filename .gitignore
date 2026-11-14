@@ -1,0 +1,12 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+
+# Temporary headless render working directory
+assets/_render/
+
+# Tooling caches
+.ruff_cache/
+
+# macOS metadata
+.DS_Store

@@ -1,0 +1,5 @@
+# Keep LF line endings across Windows and WSL/Linux checkouts
+* text=auto eol=lf
+
+# Raster PNG assets are binary, never apply text conversion
+*.png binary

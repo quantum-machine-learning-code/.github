@@ -1,5 +1,7 @@
 # Quantum Machine Learning Code
 
+[English](README_EN.md) | 简体中文
+
 <p align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/quantum-machine-learning-code/.github/main/assets/quantum-avatar-dark.png">

@@ -11,7 +11,6 @@ from __future__ import annotations
 import shutil
 import struct
 import subprocess
-import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
@@ -68,11 +67,26 @@ def main() -> None:
             if transparent:
                 cmd.append("--default-background-color=00000000")
             cmd += [f"--screenshot={out}", hp.as_uri()]
-            proc = subprocess.run(cmd, cwd=WORK, capture_output=True, text=True,
-                                  encoding="utf-8", errors="replace", timeout=120)
+            proc = subprocess.run(
+                cmd,
+                check=False,
+                cwd=WORK,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                timeout=120,
+            )
+            if proc.returncode != 0:
+                stderr = (proc.stderr or "").strip()[:300]
+                msg = (
+                    f"Headless render failed for {name} "
+                    f"(exit {proc.returncode}): {stderr}"
+                )
+                raise RuntimeError(msg)
             if not out.exists():
-                print(f"FAILED {name}: {(proc.stderr or '').strip()[:300]}", file=sys.stderr)
-                continue
+                stderr = (proc.stderr or "").strip()[:300]
+                raise RuntimeError(f"Rendered output missing for {name}: {stderr}")
             data = out.read_bytes()
             w, h = struct.unpack(">II", data[16:24])
             print(f"{name}: {w}x{h}, {len(data)} bytes")
