@@ -15,6 +15,25 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Hardware](https://img.shields.io/badge/quantum%20hardware-not%20required-success)
 
+> **重要 · 对照口径修正（2026-11-16，优先于本页下方所有历史数值）**：
+> 审查发现 `quantum-llm` 课题一的历史「量子 vs 经典」对照**不是干净消融** ——
+> 两臂除中间变换外还差读出缩放（`scale` 5.0 vs 1.0）、初始化
+> （`near_identity_init` True vs False）与中间层容量（12 vs 240 参数）；
+> grokking 长训练里的 `RICH/*` 实际是经典臂；课题一评估只取最后位置
+> logits，是一次性分类而非自回归生成；量子层逐位置运行、不承载跨步状态。
+> 因此本页所有「量子层无可证实正贡献」「不宣称量子优势」「Holm 后 0 显著」
+> 等表述**一律降级为「不同配置之间的观察」** —— 既不支持「没有量子优势」，
+> 也不支持「有」。现已新增 `--matched` 严格对照：代码层硬断言两臂仅差
+> `transform_type`，共用可学习 scale、对称初始化与同一 `LayerNorm` 校准
+> 初始输出，见 [`docs/REVIEW.md` 第 14 节](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/REVIEW.md)
+> 与 [`docs/matched_metrics.json`](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/matched_metrics.json)。
+> 两轮 `--matched` 实测**均未通过装置有效性检查**（一版经典臂 3/5 seed
+> 停在随机基线，一版两臂一起退化到 `0.0062`），归档目前只作配置诊断，
+> 不用于比较两臂；这也说明历史「两臂都学会」的数字依赖只给量子臂调过的
+> `scale=5.0`。仍待解决：两臂各自调参至都通过门槛、容量匹配扫描
+> （12 vs 240 是 4→48 接口下的结构固有差异），以及让量子层真正参与
+> 序列依赖的架构改造。
+
 ## 我们在做什么
 
 这里存放**可复现、可核对**的量子机器学习实验代码，聚焦量子计算与 AI 的交叉方向：把参数化量子电路放进经典深度学习训练循环，再和同规模经典模型放在同一套配置下比较。
