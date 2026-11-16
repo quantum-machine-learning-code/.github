@@ -23,16 +23,30 @@
 > logits，是一次性分类而非自回归生成；量子层逐位置运行、不承载跨步状态。
 > 因此本页所有「量子层无可证实正贡献」「不宣称量子优势」「Holm 后 0 显著」
 > 等表述**一律降级为「不同配置之间的观察」** —— 既不支持「没有量子优势」，
-> 也不支持「有」。现已新增 `--matched` 严格对照：代码层硬断言两臂仅差
-> `transform_type`，共用可学习 scale、对称初始化与同一 `LayerNorm` 校准
-> 初始输出，见 [`docs/REVIEW.md` 第 14 节](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/REVIEW.md)
-> 与 [`docs/matched_metrics.json`](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/matched_metrics.json)。
-> 两轮 `--matched` 实测**均未通过装置有效性检查**（一版经典臂 3/5 seed
-> 停在随机基线，一版两臂一起退化到 `0.0062`），归档目前只作配置诊断，
-> 不用于比较两臂；这也说明历史「两臂都学会」的数字依赖只给量子臂调过的
-> `scale=5.0`。仍待解决：两臂各自调参至都通过门槛、容量匹配扫描
-> （12 vs 240 是 4→48 接口下的结构固有差异），以及让量子层真正参与
-> 序列依赖的架构改造。
+> 现已新增 `--matched` 严格对照：代码层硬断言两臂仅差 `transform_type`
+> （13 项配置相同、两臂都不加小初始化补丁、不启用增益不等的 `LayerNorm`），
+> 并在报差值前强制检查装置有效性，见
+> [`docs/REVIEW.md` 第 14 节](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/REVIEW.md)。
+> **装置诊断（2026-11-16 续）**：v1 的「对称小初始化补丁」本身造成两臂初始
+> 输出标准差差 16 倍；v2 的 `LayerNorm` 对两臂有效增益 `2.57× / 40.31×`，
+> 并非对称操作，两臂一起退到 `0.0062`；v3 两臂都退回默认初始化后尺度对齐
+> （`0.258 / 0.286`），但统一 `lr=0.015` 下经典臂仍 4/5 seed 停在基线。
+> 三版归档的 `device_validity.valid` 均为 `false`，只作配置诊断。
+> 公开记录的小预算网格显示决定因素是 **lr 而非 scale**：`lr=0.003` 下两臂
+> 正式 5 seed × 2000 步（[`docs/matched_v4_metrics.json`](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/matched_v4_metrics.json)）
+> **第一次通过装置有效性检查**：两臂各 5/5 seed 越过门槛，量子
+> `0.3251±0.0464` / 经典 `0.2767±0.0917`。主指标 val acc 配对 Δ `+0.0485`
+> 的 CI `[-0.0677,+0.1647]` 跨 0；Holm 后唯一显著项是
+> `generalization_gap`（量子臂训练–验证间隙更大），不是准确率优势。
+> 容量差与架构缺口仍未消除，因此这里只得到「两种变换实现都学动了」，
+> **不是量子层因果效应，也不写作「无量子优势」**。
+> **容量匹配**：`n_layers=20` 时量子臂 240 参数 = 经典 240（单步 `0.3865 s`），
+> 但层数同时改变线路深度 / 表达力 / 梯度，参数量相等不等于唯一自变量已隔离。
+> **更靠前的问题（§15）**：现有量子层逐位置独立、不承载跨步状态，课题一还是
+> 一次性分类，因此再干净的对照也只测到「两种 pointwise 非线性」。已落地
+> L1 测量反馈型量子循环原型 `qml_lab/recurrent.py` 与 L0/L1/L2 + P1–P4 架构
+> 方案 [`docs/ARCHITECTURE_PROPOSAL.md`](https://github.com/quantum-machine-learning-code/quantum-llm/blob/main/docs/ARCHITECTURE_PROPOSAL.md)；
+> 第 14 节全部归档统一标为「经典瓶颈基线」，不升级、不重新解释。
 
 ## 我们在做什么
 
